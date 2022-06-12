@@ -21,12 +21,10 @@ Generate a pyramid depending on a passed parameter.
 
 <pre>
 Example 1:<br>
-
      2
     1,1<br>
 
 Example 2:<br>
-
       3
      2,2
     1,1,1<br>
