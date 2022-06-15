@@ -1,10 +1,5 @@
 
 
-const isEven = (num) => {
-    return num % 2 === 0;
-};
-
-
 const display_pyramid = (pyramid) => {
     pyramid.forEach(row => {
         const space_width = row[0] - 1;   // n - 1 spaces in every row depending on number count in a row
@@ -12,6 +7,11 @@ const display_pyramid = (pyramid) => {
         console.log(row.toString().padStart(total_width, " "));
     });
     console.log("\n");
+};
+
+
+const isEven = (num) => {
+    return num % 2 === 0;
 };
 
 
