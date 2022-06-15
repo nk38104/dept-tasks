@@ -15,17 +15,17 @@ const display_pyramid = (pyramid) => {
 };
 
 
-const generate_block_row = (block_number, block_count, current_count) => {
+const generate_pyramid_row = (block_number, block_count, current_count) => {
     if (!current_count) return [];
 
-    return [block_number].concat(generate_block_row((block_count / 2 + 1 >= current_count) ? --block_number : ++block_number, block_count, --current_count));
+    return [block_number].concat(generate_pyramid_row((block_count / 2 + 1 >= current_count) ? block_number - 1 : block_number + 1, block_count, current_count - 1));
 };
 
 
 const generate_pyramid = (height, block_count) => {
     if (!height || height < 1 || isEven(height)) return [];
 
-    return [generate_block_row(height, block_count, block_count)].concat(generate_pyramid(height - 2, block_count + 2));
+    return [generate_pyramid_row(height, block_count, block_count)].concat(generate_pyramid(height - 2, block_count + 2));
 };
 
 

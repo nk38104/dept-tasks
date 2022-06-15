@@ -10,17 +10,17 @@ const display_pyramid = (pyramid) => {
 };
 
 
-const generate_block_row = (block_number, block_count) => {
+const generate_pyramid_row = (block_number, block_count) => {
     if (!block_count) return [];
   
-    return [block_number].concat(generate_block_row(block_number, --block_count));
+    return [block_number].concat(generate_pyramid_row(block_number, block_count - 1));
 };
 
 
 const generate_pyramid = (height, block_count) => {
     if (!height || height < 1) return [];
 
-    return [generate_block_row(height, block_count)].concat(generate_pyramid(--height, ++block_count));
+    return [generate_pyramid_row(height, block_count)].concat(generate_pyramid(height - 1, block_count + 1));
 };
 
 
@@ -31,3 +31,4 @@ const generate_pyramid = (height, block_count) => {
         display_pyramid(pyramid);
     }
 });
+

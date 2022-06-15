@@ -1,65 +1,77 @@
-const get_group = (group_arr, arr, avg, curr_index) => {
-    group_arr.push(arr[curr_index])
-    const current_sum = sum(group_arr);
-    
-    
-    if(current_sum > avg + 1) {
-        group_arr.pop();
-        curr_index++;
-    } else {
-        arr.splice(curr_index, 1);
-    }
-    
-    if (((current_sum > avg - 2) && (current_sum < avg + 2)) || curr_index === arr.length) {
-        return group_arr;
-    }
-    // console.log("c:", arr[curr_index])
-    // console.log("g:", group_arr)
-    // console.log("a:", arr)
-    
-    return get_group(group_arr, arr, avg, curr_index);
-}
-
-
-const sort_array = (arr) => {
-    const avg = Math.round(sum(arr) / 3);
-    console.log(avg)
-    const sorted_arr = [];
-
-    for(let i = 0; i < 3; ++i) {
-        sorted_arr.push(get_group([], arr, avg, 0));
-    }
-
-    return sorted_arr;
-}
 
 
 const sum = (arr) => {
     return arr.reduce((accum, curr) => accum += curr, 0);
 }
 
-// const assert = (arr, sorted_arr) => {
-//     const avg = Math.round(sum(arr) / 3);
-//     let isClose = true;
+const get_target_value = (arr) => {
+    return Math.round(sum(arr) / 3);
+}
 
-//     sorted_arr.forEach(sub_array => {
-//         const total_sum = sum(sub_array);
+const check_if_sum_in_range = (sub_array, target) => {
+    const total_sum = sum(sub_array);
 
-//         if (!(total_sum > avg - 2) && !(total_sum < avg + 2)) {
-//             isClose = false;
-//             return;
-//         }
-//     });
+    return ((total_sum > target - 2) && (total_sum < target + 2));
+}
 
-//     return (isClose) ? "Assertion passed." : "Assertion failed.";
-// }
+const check_if_in_minimum_boundary = (current_sum, target) => {
+    return (current_sum === target - 1) || (current_sum === target);
+}
 
-const arr1 = [1, 3, 1, 7, 5, 6, 6, 7, 4, 2]; // sum = 42 -> 42/3 = 14   [1, 3, 1, 7, 2]14 [5, 6, 4]15 [6, 7]13
-const arr2 = [8, 1, 5, 2, 4, 1, 9, 8];       // sum = 38 -> 38/3 = 13 => [8, 1, 2, 1]12 [5, 8]13 [9, 4]13
+const get_group = (group_array, original_array, target, current_index) => {
+    group_array.push(original_array[current_index])
+    const current_sum = sum(group_array);
+    
+    if(current_sum > target) {
+        group_array.pop();
+        current_index++;
+    } else {
+        original_array.splice(current_index, 1);
+    }
 
-// sort_array(arr1).forEach(sub_arr => console.log("1: ", sub_arr));
-sort_array(arr2).forEach(sub_arr => console.log("2:", sub_arr));
+    if (check_if_in_minimum_boundary(current_sum, target) || current_index === original_array.length) {
+        return group_array;
+    }
 
-// console.log(assert(arr1, [[1, 3, 1, 7, 2], [5, 6, 4], [6, 7]]));
-// console.log(assert(arr2, [[8, 1, 2, 1], [5, 8], [9, 4]]));
+    return get_group(group_array, original_array, target, current_index);
+}
+
+const sort_array = (array) => {
+    if (array.length < 3) throw new Error(`Invalid array length. Array has ${array.length} element(s) but target requires at least 3.`);
+
+    const sorted_array = [];
+    const target = get_target_value(array);
+    const array_copy = array.slice().sort().reverse();
+
+    for(let i = 0; i < 2; ++i) {
+        sorted_array.push(get_group([], array_copy, target, 0));
+    }
+
+    sorted_array.push(array_copy);
+
+    return sorted_array;
+}
+
+const assert = (array, sorted_array) => {
+    const target = get_target_value(array);
+    const result = sorted_array.filter(sub_array => check_if_sum_in_range(sub_array, target));
+
+    return (result.length != 3) ? "Assertion failed." : "Assertion passed.";
+}
+
+const array_list = [
+    [1, 3, 1, 7, 5, 6, 6, 7, 4, 2],
+    [1, 3, 1, 7, 5, 6, 6, 7, 4, 2, 6],
+    [8, 1, 5, 2, 4, 1, 9, 8],
+    [8, 1]
+]
+
+array_list.forEach((array, index) => {
+    try {
+        const sorted_array = sort_array(array);
+        console.log(`${index}: `, assert(array, sorted_array));
+    } catch (err) {
+        console.log(`${index}:  Error ->`, err.message);
+    }
+})
 
